@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 class Loan extends Model
 {
     protected $fillable = [
-        'amount', 'date', 'loan_percentage', 'agent_percentage', 'agent_id', 'lead_generator_percentage', 'lead_generator_id'
+        'transaction_no', 'amount', 'date', 'loan_percentage', 'status', 'agent_percentage', 'agent_id', 'lead_generator_percentage', 'lead_generator_id'
     ];
 
     protected static function boot()
