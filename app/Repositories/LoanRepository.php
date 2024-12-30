@@ -20,6 +20,18 @@ class LoanRepository {
         return $this->model->orderBy('created_at', 'desc')->paginate(10);
     }
 
+    public function searchAndPaginate($searchTerm, $perPage)
+    {
+        $query = $this->model->query();
+
+        if ($searchTerm) {
+            $query->where('transaction_no', 'like', "%{$searchTerm}%")
+                ->orWhere('status', 'like', "%{$searchTerm}%");
+        }
+
+        return $query->orderBy('created_at', 'desc')->paginate($perPage);
+    }
+
     public function create(array $data) {
         return $this->model->create($data);
     }
@@ -30,7 +42,7 @@ class LoanRepository {
     }
 
     public function delete(Loan $model) {
-        $model->delete();
+        return $model->delete();
     }
 
 }
