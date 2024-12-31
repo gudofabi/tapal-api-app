@@ -16,6 +16,10 @@ class LoanService
         return $this->loanRepository->getAll();
     }
 
+    public function getLoanByTransactionNo($transactionNo) {
+        return $this->loanRepository->finByTransactionNo($transactionNo);
+    }
+
     public function searchAndPaginate($searchTerm = null, $perPage = 10) {
        return $this->loanRepository->searchAndPaginate($searchTerm, $perPage);
     }

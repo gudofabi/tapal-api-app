@@ -32,6 +32,12 @@ class LoanRepository {
         return $query->orderBy('created_at', 'desc')->paginate($perPage);
     }
 
+    public function finByTransactionNo($transactionNo) {
+        $query = $this->model->query();
+        
+        return $query->where('transaction_no', $transactionNo)->first();
+    }
+
     public function create(array $data) {
         return $this->model->create($data);
     }

@@ -43,9 +43,13 @@ class LoanController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Loan $loan)
+    public function show($transactionNo)
     {
-        //
+        $response = $this->loanService->getLoanByTransactionNo($transactionNo);
+        return response()->json([
+            'data' => new LoanResource($response),
+            'message' => 'Loan successfully get!'
+        ]);
     }
 
     /**
