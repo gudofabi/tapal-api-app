@@ -2,15 +2,26 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Notifications\CustomVerifyEmail;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        // Generate a custom user_code on user creation
+        static::creating(function ($user) {
+            $user->profile_id = self::generateCustomUserCode();
+        });
+    }
 
     /**
      * The attributes that are mass assignable.
@@ -18,6 +29,7 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
+        'profile_id',
         'name',
         'email',
         'password',
@@ -44,5 +56,22 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function sendEmailVerificationNotification()
+    {
+        $this->notify(new CustomVerifyEmail);
+    }
+
+    public static function generateCustomUserCode()
+    {
+        // Get the current year in YY format
+        $year = now()->format('y');
+
+        // Generate a random 5-digit number
+        $randomNumber = str_pad(rand(0, 99999), 5, '0', STR_PAD_LEFT);
+
+        // Format the user_code
+        return sprintf('TPL-%s%s', $year, $randomNumber);
     }
 }
