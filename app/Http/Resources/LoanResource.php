@@ -18,9 +18,10 @@ class LoanResource extends JsonResource
             'loan_percentage' => $this->loan_percentage,
             'interest_amount' => $this->calculateInterestAmount(), // Add computed field here
             'status' => ucfirst($this->status),
-            'agent' => $this->agent_id ?? UserResource::make($this->agent_id),
+            'created_by' => $this->user_id ?? new UserResource($this->whenLoaded('user')),
+            'agent' => $this->agent_id ?? new UserResource($this->whenLoaded('agent')),
             'agent_percentage' => $this->agent_percentage,
-            'lead_generator' => $this->lead_generator_id ?? UserResource::make($this->lead_generator_id),
+            'lead_generator' => $this->lead_generator_id ?? new UserResource($this->whenLoaded('leadGenerator')),
             'lead_generator_percentage' => $this->lead_generator_percentage,
             'created_at' => $this->created_at->format('Y-m-d')
         ];

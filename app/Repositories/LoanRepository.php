@@ -24,12 +24,19 @@ class LoanRepository {
     {
         $query = $this->model->query();
 
+        // Filter loans created by the authenticated user
+        $query->where('user_id', auth()->id());
+
         if ($searchTerm) {
-            $query->where('transaction_no', 'like', "%{$searchTerm}%")
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('transaction_no', 'like', "%{$searchTerm}%")
                 ->orWhere('status', 'like', "%{$searchTerm}%");
+            });
         }
 
-        return $query->orderBy('created_at', 'desc')->paginate($perPage);
+        return $query->with(['user', 'agent', 'leadGenerator'])
+            ->orderBy('created_at', 'desc')
+            ->paginate($perPage);
     }
 
     public function finByTransactionNo($transactionNo) {
