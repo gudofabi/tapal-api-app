@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
+use App\Http\Resources\UserWithLoanResource;
+use App\Http\Resources\UserResource;
 use Auth;
 
 class UserController extends Controller
@@ -34,8 +36,18 @@ class UserController extends Controller
     {
         $response = $this->userService->getUserByProfileId($profileId);
         return response()->json([
-            'data' => $response,
+            'data'    => new UserWithLoanResource($response),
             'message' => 'User successfully get!'
+        ]);
+    }
+
+    public function store(UserRequest $request)
+    {
+        $data = $request->all();
+        $response = $this->userService->createUser($data);
+        return response()->json([
+            'data' => new UserResource($response),
+            'message' => 'User successfully created!'
         ]);
     }
 

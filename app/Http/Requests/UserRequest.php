@@ -25,6 +25,7 @@ class UserRequest extends FormRequest
             'name'          => 'required|string|max:255',
             'email'         => 'required|email|unique:users,email',
             'role'          => 'required|in:lender,agent,lead generator,admin',
+            'contact_no'    => 'required|numeric|digits:10|unique:users,contact_no',
         ];
     }
 }

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Notifications\Notifiable;
 use App\Notifications\CustomVerifyEmail;
 
@@ -33,6 +34,10 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
+        'role',
+        'contact_no',
+        'user_id',
+        'email_verified_at'
     ];
 
     /**
@@ -73,5 +78,23 @@ class User extends Authenticatable implements MustVerifyEmail
 
         // Format the user_code
         return sprintf('TPL-%s%s', $year, $randomNumber);
+    }
+
+    /**
+     * Get the loan associated with the user.
+     */
+    public function loans(): HasMany
+    {
+        return $this->hasMany(Loan::class);
+    }
+
+
+    /**
+     * Get the users
+     * 
+     */
+    public function users(): HasMany
+    {
+        return $this->hasMany(User::class, 'user_id');
     }
 }
