@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Repositories\UserRepository;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Carbon;
 
 class UserService
 {
@@ -22,6 +24,20 @@ class UserService
 
     public function searchAndPaginate($searchTerm = null, $perPage = 10) {
        return $this->userRepository->searchAndPaginate($searchTerm, $perPage);
+    }
+
+    public function createUser(array $data) {
+        // Ensure a hashed password
+        $data['password'] = isset($data['password'])
+            ? Hash::make($data['password']) // Hash the provided password
+            : Hash::make(env('DEFAULT_USER_PASSWORD', 'SecureDefault123')); // Default password
+
+        // Mark email as verified
+        $data['email_verified_at'] = Carbon::now();
+        $data['role'] = $data['role'] ?? 'agent';
+        $data['user_id'] = auth()->id() ?? null;
+
+        return $this->userRepository->create($data);
     }
 
     public function updateUser($id, array $data) {

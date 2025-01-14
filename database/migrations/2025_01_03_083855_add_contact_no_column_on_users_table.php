@@ -12,8 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('profile_id', 20)->unique()->after('id'); // Add UUID column with unique constraint
-            $table->enum('role', ['lender', 'agent', 'lead generator', 'admin'])->default('lender')->after('email'); // Add role column with enum values
+            $table->string('contact_no')->after('role')->nullable();
         });
     }
 
@@ -23,8 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('profile_id'); // Remove UUID column
-            $table->dropColumn('role'); // Remove role column
+            $table->dropColumn('contact_no');
         });
     }
 };
