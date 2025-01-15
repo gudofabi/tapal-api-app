@@ -40,9 +40,8 @@ class LoanRepository {
     }
 
     public function finByTransactionNo($transactionNo) {
-        $query = $this->model->query();
         
-        return $query->where('transaction_no', $transactionNo)->first();
+        return $this->model->with(['agent', 'leadGenerator', 'user'])->where('transaction_no', $transactionNo)->first();
     }
 
     public function create(array $data) {
