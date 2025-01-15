@@ -27,6 +27,13 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
                 'max:255',
                 Rule::unique('users')->ignore($user->id),
             ],
+            'role'          => 'required|in:lender,agent,lead generator,admin',
+            'contact_no'    => [
+                'required',
+                'numeric',
+                'digits:10',
+                Rule::unique('users')->ignore($user->id),
+            ],
         ])->validateWithBag('updateProfileInformation');
 
         if ($input['email'] !== $user->email &&
@@ -36,6 +43,8 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             $user->forceFill([
                 'name' => $input['name'],
                 'email' => $input['email'],
+                'role' => $input['role'],
+                'contact_no' => $input['contact_no'],
             ])->save();
         }
     }
