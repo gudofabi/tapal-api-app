@@ -12,6 +12,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     });
     Route::resource('loans', LoanController::class);
     Route::resource('users', UserController::class);
+    Route::get('users/role/{role}', [UserController::class, 'getUsersByRole']);
 });
 
 

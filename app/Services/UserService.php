@@ -26,6 +26,11 @@ class UserService
        return $this->userRepository->searchAndPaginate($searchTerm, $perPage);
     }
 
+    public function getUsersByRole($role)
+    {
+        return $this->userRepository->getUsersByRole($role);
+    }
+
     public function createUser(array $data) {
         // Ensure a hashed password
         $data['password'] = isset($data['password'])

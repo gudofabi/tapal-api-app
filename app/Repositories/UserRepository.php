@@ -19,17 +19,6 @@ class UserRepository {
         return $this->model->orderBy('created_at', 'desc')->paginate(10);
     }
 
-    // public function searchAndPaginate($searchTerm, $perPage)
-    // {
-    //     $query = $this->model->query();
-
-    //     if ($searchTerm) {
-    //         $query->where('profile_id', 'like', "%{$searchTerm}%")
-    //             ->orWhere('name', 'like', "%{$searchTerm}%");
-    //     }
-
-    //     return $query->orderBy('created_at', 'desc')->paginate($perPage);
-    // }
     public function searchAndPaginate($searchTerm, $perPage)
     {
         $query = $this->model->query();
@@ -53,7 +42,10 @@ class UserRepository {
         return $query->orderBy('created_at', 'desc')->paginate($perPage);
     }
 
-    
+    public function getUsersByRole($role)
+    {
+        return $this->model->where('role', $role)->get();
+    }
 
     public function finByProfileId($profileId) {
         $query = $this->model->query();

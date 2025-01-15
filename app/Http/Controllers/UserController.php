@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
 use App\Http\Resources\UserWithLoanResource;
 use App\Http\Resources\UserResource;
+use App\Http\Resources\DropdownResource;
 use Auth;
 
 class UserController extends Controller
@@ -75,4 +76,22 @@ class UserController extends Controller
         $this->userService->deleteUser($id);
         return response()->json(['message' => 'User successfully deleted!']);
     }
+
+
+    /**
+     * Fetch users based on their roles.
+     */
+    public function getUsersByRole($role)
+    {
+        try {
+            $users = $this->userService->getUsersByRole($role);
+            return response()->json([
+                'data' =>  DropdownResource::collection($users),
+                'message' => 'Users successfully fetched based on role!'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 400);
+        }
+    }
+
 }
