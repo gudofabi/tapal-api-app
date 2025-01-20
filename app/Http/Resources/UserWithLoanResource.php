@@ -20,6 +20,7 @@ class UserWithLoanResource extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'role' => $this->role,
+            'contact_no' => $this->contact_no,
             'loans' => LoanResource::collection($this->loans)
         ];
     }
