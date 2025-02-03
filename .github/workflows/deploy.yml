@@ -21,7 +21,7 @@ jobs:
           ssh-keyscan -p 2828 64.176.57.179 >> ~/.ssh/known_hosts
           ls -la ~/.ssh/  # Debugging step
 
-      - name: Deploy Docker Containers on VPS
+      - name: Deploy Docker Containers on Tapwal VPS
         run: |
           echo "Starting Deployment via SSH..."
           ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no -p 2828 gudofabi@64.176.57.179 << 'EOF'
