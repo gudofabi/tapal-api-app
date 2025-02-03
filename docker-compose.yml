@@ -12,8 +12,6 @@ services:
             - ./storage:/var/www/storage
         networks:
             - laravel
-        depends_on:
-            - mysql
 
     nginx:
         image: nginx:latest
@@ -30,6 +28,3 @@ services:
 networks:
     laravel:
         driver: bridge
-
-volumes:
-    mysql_data:
