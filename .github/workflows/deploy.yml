@@ -1,37 +1,53 @@
-name: Docker Compose Operations
+name: Deploy Tapal API to Vultr
 
 on:
   push:
     branches:
-      - main
-  pull_request:
-    branches:
-      - main
+      - main # Deploy when code is pushed to the main branch
 
 jobs:
-  build_and_run:
+  deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout code
+      - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Set up Docker and Docker Compose
-        uses: docker/setup-buildx-action@v1
-
-      - name: Stop and remove existing containers
-        run: docker-compose down
-
-      - name: Build and run containers
-        run: docker-compose up -d --build
-
-      - name: Wait for containers to be ready
-        run: sleep 10 # Adjust sleep time based on your app's startup time
-
-      - name: Install Composer dependencies and generate key in tapwal_app
+      - name: Set Up SSH Key
         run: |
-          docker exec tapwal_app composer install --no-interaction
-          docker exec tapwal_app php artisan key:generate
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -p 2828 64.176.57.179 >> ~/.ssh/known_hosts
+          ls -la ~/.ssh/  # Debugging step
 
-      - name: Cleanup
-        if: always()
-        run: docker-compose down
+      - name: Deploy Docker Containers on VPS
+        run: |
+          echo "Starting Deployment via SSH..."
+          ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no -p 2828 gudofabi@64.176.57.179 << 'EOF'
+          echo "Connected to VPS"
+
+          # Navigate to the project directory
+          cd /home/gudofabi/tapal-api-app
+
+          # Pull latest code from GitHub
+          git pull origin main
+
+          # Ensure proper permissions
+          sudo chown -R $(whoami):$(whoami) /home/gudofabi/tapal-api-app
+          sudo chmod -R 775 /home/gudofabi/tapal-api-app/storage /home/gudofabi/tapal-api-app/bootstrap/cache
+
+          # Stop and remove old containers
+          docker-compose down
+
+          # Remove old vendor and install dependencies inside the container
+          docker exec -it tapwal_app bash -c "rm -rf vendor && composer install"
+
+          # Build and start new containers
+          docker-compose up -d --build
+
+          # Verify running containers
+          docker ps
+
+          echo "Deployment completed successfully."
+          EOF
