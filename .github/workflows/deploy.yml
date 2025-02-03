@@ -33,15 +33,19 @@ jobs:
           # Pull latest code from GitHub
           git pull origin main
 
-          # Ensure proper permissions
+          # Ensure proper permissions for storage & cache
           sudo chown -R $(whoami):$(whoami) /home/gudofabi/tapal-api-app
           sudo chmod -R 775 /home/gudofabi/tapal-api-app/storage /home/gudofabi/tapal-api-app/bootstrap/cache
 
           # Stop and remove old containers
           docker-compose down
 
-          # Remove old vendor and install dependencies inside the container
-          docker exec -it tapwal_app bash -c "rm -rf vendor && composer install"
+          # Remove old vendor directory and install dependencies inside the container
+          docker exec -it tapwal_app bash -c "rm -rf /var/www/vendor && composer install"
+
+          # ✅ Step 4: Verify Permissions for vendor directory
+          docker exec -it tapwal_app bash -c "chown -R www-data:www-data /var/www/vendor"
+          docker exec -it tapwal_app bash -c "chmod -R 775 /var/www/vendor"
 
           # Build and start new containers
           docker-compose up -d --build
