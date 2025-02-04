@@ -33,9 +33,11 @@ jobs:
           # Pull latest code from GitHub
           git pull origin main
 
-          # Stop and remove existing container to prevent name conflicts
+          # Stop and remove existing Laravel and Nginx containers to prevent name conflicts
           docker stop tapwal_app || true
           docker rm tapwal_app || true
+          docker stop tapwal_nginx || true
+          docker rm tapwal_nginx || true
 
           # Rebuild and start new containers
           docker compose up -d --build
