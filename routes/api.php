@@ -42,7 +42,7 @@ Route::get('/email/verify', function () {
 Route::get('/health', function () {
     return response()->json([
         'status' => 'ok',
-        'app' => env('APP_URL'),
-        'frontend' => env('APP_FRONTEND_URL'),
+        'app' => "Sample",
+        'frontend' => "Sample",
     ], 200);
 });
