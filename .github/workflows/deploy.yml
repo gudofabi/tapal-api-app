@@ -1,4 +1,4 @@
-name: Deploy Tapal API to Vultr
+name: Deploy Tapal REST API to Vultr
 
 on:
   push:
