@@ -40,9 +40,5 @@ Route::get('/email/verify', function () {
 
 
 Route::get('/health', function () {
-    return response()->json([
-        'status' => 'ok',
-        'app' => "Sample",
-        'frontend' => "Samplesss",
-    ], 200);
+    return "hello world!";
 });
