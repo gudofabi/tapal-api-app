@@ -23,7 +23,7 @@ WORKDIR /var/www
 COPY . .
 
 # Install PHP dependencies inside the container
-RUN composer install --no-dev --optimize-autoloader
+RUN composer install
 
 # Ensure .env file exists and generate application key
 RUN cp .env.example .env \
