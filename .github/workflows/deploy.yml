@@ -33,7 +33,11 @@ jobs:
           # Pull latest code from GitHub
           git pull origin main
 
-          # Build and start new containers (no need to manually run composer install or key:generate)
+          # Stop and remove existing container to prevent name conflicts
+          docker stop tapwal_app || true
+          docker rm tapwal_app || true
+
+          # Rebuild and start new containers
           docker compose up -d --build
 
           # Verify running containers
