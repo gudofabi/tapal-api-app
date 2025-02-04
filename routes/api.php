@@ -37,3 +37,8 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
 Route::get('/email/verify', function () {
     return response()->json(['message' => 'Email verification is required.'], 403);
 })->middleware(['auth:sanctum'])->name('verification.notice');
+
+
+Route::get('/health', function () {
+    return response()->json(['status' => 'ok'], 200);
+});
