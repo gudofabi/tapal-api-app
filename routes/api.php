@@ -39,6 +39,6 @@ Route::get('/email/verify', function () {
 })->middleware(['auth:sanctum'])->name('verification.notice');
 
 
-Route::get('/health', function () {
+Route::get('/health-check', function () {
     return "hello world!";
 });
