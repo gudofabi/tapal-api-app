@@ -34,7 +34,7 @@ jobs:
           git pull origin main
 
           # Build and start new containers (no need to manually run composer install or key:generate)
-          docker-compose up -d --build
+          docker compose up -d --build
 
           # Verify running containers
           docker ps
