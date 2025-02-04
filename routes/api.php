@@ -43,6 +43,6 @@ Route::get('/health', function () {
     return response()->json([
         'status' => 'ok',
         'app' => "Sample",
-        'frontend' => "Sample",
+        'frontend' => "Samplesss",
     ], 200);
 });
