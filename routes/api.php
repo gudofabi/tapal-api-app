@@ -40,5 +40,9 @@ Route::get('/email/verify', function () {
 
 
 Route::get('/health-check', function () {
-    return "hello world!";
+    return response()->json([
+        'status' => 'ok',
+        'frontend' => config('app.frontend_url'),
+        'api' => config('app.url'),
+    ], 200);
 });
