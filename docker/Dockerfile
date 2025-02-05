@@ -19,11 +19,11 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /var/www
 
-# Copy application code
+# Copy application code **before** installing dependencies
 COPY . .
 
 # Install PHP dependencies inside the container
-RUN composer install --no-dev --optimize-autoloader
+RUN composer install
 
 # Ensure .env file exists and generate application key
 RUN cp .env.example .env \
@@ -36,5 +36,5 @@ RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache \
 # Expose PHP-FPM port
 EXPOSE 9000
 
-# Run migrations with seeding before starting PHP-FPM
-CMD sh -c "php artisan migrate --seed --force && php-fpm"
+# Run PHP-FPM
+CMD ["php-fpm"]
