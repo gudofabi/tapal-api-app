@@ -33,16 +33,28 @@ jobs:
           # Pull latest code from GitHub
           git pull origin main
 
-          # Stop and remove existing Laravel and Nginx containers to prevent name conflicts
-          docker stop tapwal_app || true
-          docker rm tapwal_app || true
-          docker stop tapwal_nginx || true
-          docker rm tapwal_nginx || true
+          # Stop and remove only the Tapwal containers
+          echo "Stopping and removing tapwal containers..."
+          docker stop tapwal_app tapwal_nginx || true
+          docker rm tapwal_app tapwal_nginx || true
 
-          # Rebuild and start new containers
-          docker compose up -d --build
+          # Remove old images to avoid caching issues
+          echo "Pruning old Docker images..."
+          docker system prune -a -f
+
+          # Rebuild and restart only the Tapwal containers
+          echo "Rebuilding and starting Tapwal containers..."
+          docker compose up -d --build app nginx
+
+          # Clear Laravel caches
+          echo "Clearing Laravel caches..."
+          docker exec -it tapwal_app php artisan config:clear
+          docker exec -it tapwal_app php artisan cache:clear
+          docker exec -it tapwal_app php artisan route:clear
+          docker exec -it tapwal_app php artisan view:clear
 
           # Verify running containers
+          echo "Checking running containers..."
           docker ps
 
           # Show Laravel logs (optional for debugging)
