@@ -31,12 +31,26 @@ jobs:
           cd /home/gudofabi/tapal-api-app
 
           # Pull latest code from GitHub
+          echo "Pulling latest code from GitHub..."
           git pull origin main
 
-          # Stop and remove only the Tapwal containers
-          echo "Stopping and removing tapwal containers..."
-          docker stop tapwal_app tapwal_nginx || true
-          docker rm tapwal_app tapwal_nginx || true
+          # Check if tapwal containers are running before stopping/removing
+          echo "Checking if tapwal containers exist..."
+          if [ "$(docker ps -q -f name=tapwal_app)" ]; then
+            echo "Stopping tapwal_app..."
+            docker stop tapwal_app
+            docker rm tapwal_app
+          else
+            echo "tapwal_app is not running."
+          fi
+
+          if [ "$(docker ps -q -f name=tapwal_nginx)" ]; then
+            echo "Stopping tapwal_nginx..."
+            docker stop tapwal_nginx
+            docker rm tapwal_nginx
+          else
+            echo "tapwal_nginx is not running."
+          fi
 
           # Remove old images to avoid caching issues
           echo "Pruning old Docker images..."
@@ -46,19 +60,31 @@ jobs:
           echo "Rebuilding and starting Tapwal containers..."
           docker compose up -d --build app nginx
 
+          # Wait for containers to start
+          sleep 5
+
           # Clear Laravel caches
           echo "Clearing Laravel caches..."
-          docker exec -it tapwal_app php artisan config:clear
-          docker exec -it tapwal_app php artisan cache:clear
-          docker exec -it tapwal_app php artisan route:clear
-          docker exec -it tapwal_app php artisan view:clear
+          if [ "$(docker ps -q -f name=tapwal_app)" ]; then
+            docker exec -it tapwal_app php artisan config:clear
+            docker exec -it tapwal_app php artisan cache:clear
+            docker exec -it tapwal_app php artisan route:clear
+            docker exec -it tapwal_app php artisan view:clear
+          else
+            echo "tapwal_app is not running, skipping cache clearing."
+          fi
 
           # Verify running containers
           echo "Checking running containers..."
           docker ps
 
           # Show Laravel logs (optional for debugging)
-          docker logs tapwal_app --tail=50
+          if [ "$(docker ps -q -f name=tapwal_app)" ]; then
+            echo "Showing latest Laravel logs..."
+            docker logs tapwal_app --tail=50
+          else
+            echo "tapwal_app is not running, no logs to show."
+          fi
 
           echo "Deployment completed successfully."
           EOF
