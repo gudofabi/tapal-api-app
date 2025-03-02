@@ -6,6 +6,8 @@ use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Http\Controllers\LoanController;
 use App\Http\Controllers\UserController;
 
+use Laravel\Fortify\Http\Controllers\NewPasswordController;
+
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('user', function() {
         return Auth::user();
@@ -38,6 +40,9 @@ Route::get('/email/verify', function () {
     return response()->json(['message' => 'Email verification is required.'], 403);
 })->middleware(['auth:sanctum'])->name('verification.notice');
 
+
+Route::get('/reset-password/{token}', [NewPasswordController::class, 'create'])
+    ->name('password.reset');
 
 Route::get('/health-check', function () {
     return response()->json([
